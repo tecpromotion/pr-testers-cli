@@ -2,9 +2,9 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Joomla\Console\Application;
-use Joomla\Console\Command\AbstractCommand;
 use Joomla\Http\HttpFactory;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,28 +15,26 @@ $dotenv = new Dotenv();
 $dotenv->load(__DIR__ . '/../.env');
 
 
-class GithubCommentsCli extends AbstractCommand
+class GithubCommentsCli extends Command
 {
     protected static $defaultName        = 'github-pr-comments';
     protected static $defaultDescription = 'Fetch merged PR comments by milestone + filter by phrase';
 
-    public function __construct()
+    protected function configure(): void
     {
-        parent::__construct();
-        $this->getDefinition()->addOption(new InputOption('token', null, InputOption::VALUE_OPTIONAL, 'GitHub token'));
-        $this->getDefinition()->addOption(new InputOption('owner', null, InputOption::VALUE_OPTIONAL, 'GitHub owner'));
-        $this->getDefinition()->addOption(new InputOption('repo', null, InputOption::VALUE_OPTIONAL, 'GitHub repository'));
-        $this->getDefinition()->addOption(new InputOption('base', null, InputOption::VALUE_OPTIONAL, 'PR base branch'));
-        $this->getDefinition()->addOption(new InputOption('milestone', null, InputOption::VALUE_OPTIONAL, 'PR milestone'));
-        // Accept multiple --keyword entries
-        $this->getDefinition()->addOption(
-            new InputOption('keyword', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Filter keyword(s)')
-        );
-        // Date filter for merged PRs (optional)
-        $this->getDefinition()->addOption(new InputOption('merged-since', null, InputOption::VALUE_OPTIONAL, 'Date filter for merged PRs (YYYY-MM-DD)'));
+        $this
+            ->setName('github-pr-comments')
+            ->setDescription('Fetch merged PR comments by milestone + filter by phrase')
+            ->addOption('token', null, InputOption::VALUE_OPTIONAL, 'GitHub token')
+            ->addOption('owner', null, InputOption::VALUE_OPTIONAL, 'GitHub owner')
+            ->addOption('repo', null, InputOption::VALUE_OPTIONAL, 'GitHub repository')
+            ->addOption('base', null, InputOption::VALUE_OPTIONAL, 'PR base branch')
+            ->addOption('milestone', null, InputOption::VALUE_OPTIONAL, 'PR milestone')
+            ->addOption('keyword', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Filter keyword(s)')
+            ->addOption('merged-since', null, InputOption::VALUE_OPTIONAL, 'Date filter for merged PRs (YYYY-MM-DD)');
     }
 
-    protected function doExecute(InputInterface $input, OutputInterface $output): int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $token       = $input->getOption('token') ?? $_ENV['GITHUB_TOKEN'] ?? null;
         $owner       = $input->getOption('owner') ?? $_ENV['GITHUB_OWNER'] ?? null;
@@ -235,7 +233,9 @@ GQL;
     }
 }
 
-// Bootstrap Joomla Console application
-$app = new Application();
-$app->addCommand(new GithubCommentsCli());
-$app->execute();
+// Bootstrap Symfony Console application
+$command = new GithubCommentsCli();
+$app     = new Application('GitHub PR Comments', '1.0.0');
+$app->addCommand($command);
+$app->setDefaultCommand('github-pr-comments', true);
+$app->run();

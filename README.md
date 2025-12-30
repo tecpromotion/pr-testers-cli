@@ -45,17 +45,15 @@ The `github-pr-comments` CLI command fetches merged pull request comments from a
 
 4. **Run** the command:
 
-   **Important:** You must include the command name `github-pr-comments` when using CLI options.
-
    ```bash
    # Using environment variables from .env file
-   php cli/github-pr-comments.php github-pr-comments
+   php cli/github-pr-comments.php
 
    # With date filter
-   php cli/github-pr-comments.php github-pr-comments --merged-since=2025-11-05
+   php cli/github-pr-comments.php --merged-since=2025-11-05
 
    # With all CLI options
-   php cli/github-pr-comments.php github-pr-comments \
+   php cli/github-pr-comments.php \
      --token=your_token_here \
      --owner=your_org \
      --repo=your_repo \
@@ -82,10 +80,10 @@ The `github-pr-comments` CLI command fetches merged pull request comments from a
 
 ```bash
 # Filter PRs merged since a specific date
-php cli/github-pr-comments.php github-pr-comments --merged-since=2025-11-05
+php cli/github-pr-comments.php --merged-since=2025-11-05
 
 # Override milestone and keywords from CLI
-php cli/github-pr-comments.php github-pr-comments \
+php cli/github-pr-comments.php \
   --milestone="v1.0.0" \
   --keyword="tested" \
   --keyword="LGTM"
@@ -93,7 +91,7 @@ php cli/github-pr-comments.php github-pr-comments \
 
 Get a list of all possible options:
 ```bash
-php cli/github-pr-comments.php github-pr-comments --help
+php cli/github-pr-comments.php --help
 ```
 
 **Result**
