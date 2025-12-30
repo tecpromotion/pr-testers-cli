@@ -17,9 +17,6 @@ $dotenv->load(__DIR__ . '/../.env');
 
 class GithubCommentsCli extends Command
 {
-    protected static $defaultName        = 'github-pr-comments';
-    protected static $defaultDescription = 'Fetch merged PR comments by milestone + filter by phrase';
-
     protected function configure(): void
     {
         $this
